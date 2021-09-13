@@ -1,31 +1,46 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { ArithmeticService } from './arithmetic.service';
 
 describe('AppComponent', () => {
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
+      declarations: [AppComponent],
+      providers: [ArithmeticService] // allows the service to be injected
     }).compileComponents();
+
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+  it('should add 2 + 2', ()=> {
+    let fixture = TestBed.createComponent(AppComponent);
+    let app = fixture.componentInstance;
 
-  it(`should have as title 'spies-and-mocks'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('spies-and-mocks');
-  });
+    app.ngOnInit() // creates the form group
+    app.myForm.controls['a'].setValue(2)
+    app.myForm.controls['b'].setValue(2)
+    app.myForm.controls['operation'].setValue("add")
+    
+    // spyOn(app, "doCalculate").and.callFake( () => app.result = 4 )
+    app.doCalculate()
+    
+    expect(app.result).toEqual(4)
+  })
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('spies-and-mocks app is running!');
-  });
+  it('should multiply 2 X 3', ()=> {
+    let service = new ArithmeticService()
+    let app = new AppComponent(service)
+    
+    app.ngOnInit() // creates the form group
+    app.myForm.controls['a'].setValue(2)
+    app.myForm.controls['b'].setValue(3)
+    app.myForm.controls['operation'].setValue("mult")
+    
+    // spyOn(service, "calculate").and.returnValue(6)
+
+    app.doCalculate()
+    
+    expect(app.result).toEqual(6)
+  })
+
 });
